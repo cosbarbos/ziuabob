@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bob!</title>
+
+<style>
+  :root {
+    --line: #000;          /* outline color */
+    --bg: #fff;            /* page background */
+    --star: #ffe600;       /* yellow star color */
+    --card-radius: 0px;    /* 0 = square corners like your sketch; try 22px for rounded like the other pages */
+    --gap: 24px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  /* the whole page is the background */
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px 28px;
+  }
+
+  /* left column (photo + text) and right column (9 images + bar) */
+  .layout {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 780px);
+    gap: 56px;
+    align-items: start;
+    width: 100%;
+    max-width: 1100px;
+    justify-content: center;
+  }
+
+  .side { padding-top: 12px; }
+
+  .side-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #ffffff;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 900;
+    font-size: .9rem;
+  }
+  .side-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .side-text {
+    margin: 16px 0 0;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.1rem;
+    line-height: 1.3;
+  }
+  .side-text.second { margin-top: 64px; }
+
+  /* 9 images, 3 per row */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+    justify-items: center;
+    width: 100%;
+    margin: 0 0 32px;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 3px solid var(--line);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 900;
+    letter-spacing: .5px;
+  }
+  /* the real image sits on top of the "PLACEHOLDER IMAGE" text */
+  .card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: zoom-in;
+  }
+
+  /* bottom bar: menu button + page numbers + star */
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .pages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 0 1 560px;
+    padding: 10px 24px;
+    border: 3px solid var(--line);
+    border-radius: 999px;
+  }
+  .pages a {
+    min-width: 34px;
+    padding: 4px 6px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--line);
+    text-decoration: none;
+    border-radius: 999px;
+  }
+  .pages a:hover,
+  .pages a:focus-visible { background: #eee; }
+  .pages a.current { background: var(--line); color: var(--bg); }
+
+  /* round buttons on both sides (menu on the left, star on the right) */
+  .menu,
+  .star {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--line);
+    border-radius: 50%;
+    text-decoration: none;
+  }
+  .menu { color: var(--line); }
+  .menu:hover,
+  .menu:focus-visible { background: #eee; }
+  .menu svg { width: 24px; height: 24px; }
+
+  .star {
+    color: var(--star);
+    font-size: 1.8rem;
+    line-height: 1;
+    -webkit-text-stroke: 1.5px #c9b800;
+  }
+  .star:hover,
+  .star:focus-visible,
+  .star.current { background: #fffbd0; }
+
+  /* click-to-enlarge */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, .6);   /* darkness of the background: change .6 (0 = none, 1 = black) */
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;             /* full image, nothing cropped */
+    border: 3px solid var(--line);
+    border-radius: var(--card-radius);
+    background: var(--bg);
+  }
+
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .side { max-width: 200px; margin: 0 auto; padding-top: 0; }
+    .side-text.second { margin-top: 20px; }
+  }
+
+  @media (max-width: 700px) {
+    .page { padding: 24px 12px 20px; }
+    .gallery { gap: 10px; margin-bottom: 28px; }
+    .card { border-width: 2px; }
+    .bar { gap: 10px; }
+    .pages { padding: 8px 10px; gap: 2px; }
+    .pages a { min-width: 22px; padding: 4px 3px; font-size: .95rem; }
+    .menu, .star { width: 44px; height: 44px; }
+    .star { font-size: 1.5rem; }
+  }
+</style>
+</head>
+
+<!-- This is page 9 (the star) -->
+<body data-page="9">
+
+<div class="page">
+<div class="layout">
+
+  <!-- ============ Left side: photo + text under it ============ -->
+  <aside class="side">
+    <div class="side-photo"> <img src="images/page9/headphone.png" alt="" onerror="this.remove()"></div>
+    <p class="side-text">Wear headphones for better experience</p>
+    <p class="side-text second">Peak music choice I know m'kay?</p>
+  </aside>
+
+  <div class="content">
+
+  <!-- ============ Your 9 images: change the paths / file extensions here ============ -->
+  <main class="gallery">
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img1.png" alt="Image 1" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img2.png" alt="Image 2" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img3.png" alt="Image 3" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img4.png" alt="Image 4" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img5.png" alt="Image 5" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img6.png" alt="Image 6" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img7.png" alt="Image 7" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img8.png" alt="Image 8" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page9/img9.png" alt="Image 9" onerror="this.remove()"></div>
+  </main>
+
+  <!-- ============ Bar: menu (goes to page 0) + page numbers + star ============ -->
+  <nav class="bar" aria-label="Pages">
+    <a class="menu" href="page0.html" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </a>
+    <div class="pages">
+      <a href="page1.html">1</a>
+      <a href="page2.html">2</a>
+      <a href="page3.html">3</a>
+      <a href="page4.html">4</a>
+      <a href="page5.html">5</a>
+      <a href="page6.html">6</a>
+      <a href="page7.html">7</a>
+      <a href="page8.html">8</a>
+    </div>
+    <a class="star" href="page9.html" aria-label="Page 9">&#9733;</a>
+  </nav>
+
+  </div>
+</div>
+</div>
+
+<!-- ============ Background song: change the file name here ============ -->
+<audio id="bgm" src="audio/song.mp3" loop preload="auto"></audio>
+
+<!-- Enlarged image view -->
+<div class="lightbox" id="lightbox"><img alt=""></div>
+
+<script>
+  // Highlights the current page using <body data-page="...">
+  const current = document.body.dataset.page;
+  document.querySelectorAll('.pages a').forEach(a => {
+    if (a.textContent.trim() === current) {
+      a.classList.add('current');
+      a.setAttribute('aria-current', 'page');
+    }
+  });
+  if (current === '9') {
+    const star = document.querySelector('.star');
+    star.classList.add('current');
+    star.setAttribute('aria-current', 'page');
+  }
+
+  // Background song: starts when the page opens, stops when you leave
+  const bgm = document.getElementById('bgm');
+  bgm.volume = 0.5;                       // 0 = silent, 1 = full volume
+  bgm.play().catch(() => {
+    // The browser blocked autoplay: start the song on the first click, tap or key press instead
+    const unlock = () => {
+      bgm.play();
+      document.removeEventListener('pointerdown', unlock);
+      document.removeEventListener('keydown', unlock);
+    };
+    document.addEventListener('pointerdown', unlock);
+    document.addEventListener('keydown', unlock);
+  });
+  window.addEventListener('pagehide', () => bgm.pause());
+
+  // Click an image to see it in full; click anywhere or press Esc to close
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+  document.querySelectorAll('.card img').forEach(img => {
+    img.tabIndex = 0;
+    const open = () => {
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.classList.add('open');
+    };
+    img.addEventListener('click', open);
+    img.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
+  });
+  lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') lightbox.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>

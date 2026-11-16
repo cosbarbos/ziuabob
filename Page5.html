@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esti</title>
+
+<style>
+  :root {
+    --line: #000;          /* outline color */
+    --bg: #fff;            /* page background */
+    --star: #ffe600;       /* yellow star color */
+    --frame-radius: 60px;
+    --card-radius: 22px;
+    --gap: 28px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  /* the whole page is the background (no box around it) */
+  .frame {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px 28px;
+  }
+
+  /* 6 images, centered, 3 per row */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+    justify-items: center;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 40px;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5 / 3;
+    border: 3px solid var(--line);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 900;
+    letter-spacing: .5px;
+  }
+  /* the real image sits on top of the "PLACEHOLDER IMAGE" text */
+  .card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* bottom bar: page numbers + star */
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .pages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 0 1 560px;
+    padding: 10px 24px;
+    border: 3px solid var(--line);
+    border-radius: 999px;
+  }
+  .pages a {
+    min-width: 34px;
+    padding: 4px 6px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--line);
+    text-decoration: none;
+    border-radius: 999px;
+  }
+  .pages a:hover,
+  .pages a:focus-visible { background: #eee; }
+  .pages a.current { background: var(--line); color: var(--bg); }
+
+  .star {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--line);
+    border-radius: 50%;
+    color: var(--star);
+    font-size: 1.8rem;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-text-stroke: 1.5px #c9b800;
+  }
+  .star:hover,
+  .star:focus-visible { background: #fffbd0; }
+
+  /* click-to-enlarge */
+  .card img { cursor: zoom-in; }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, .6);   /* darkness of the background: change .6 (0 = none, 1 = black) */
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;             /* full image, nothing cropped */
+    border: 3px solid var(--line);
+    border-radius: var(--card-radius);
+    background: var(--bg);
+  }
+
+  @media (max-width: 700px) {
+    .frame { padding: 24px 16px 20px; }
+    .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .pages a { min-width: 26px; font-size: 1rem; }
+  }
+</style>
+</head>
+
+<!-- ============ CHANGE 1 of 2: put the page number here (1 to 8) ============ -->
+<body data-page="5">
+
+<div class="frame">
+
+  <!-- ============ CHANGE 2 of 2: replace the 6 image paths + alt texts ============ -->
+  <main class="gallery">
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page5/img1.png" alt="Image 1" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page5/img2.png" alt="Image 2" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page5/img3.png" alt="Image 3" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page5/img4.png" alt="Image 4" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page5/img5.png" alt="Image 5" onerror="this.remove()"></div>
+    <div class="card">PLACEHOLDER<br>IMAGE <img src="images/page5/img6.webp" alt="Image 6" onerror="this.remove()"></div>
+  </main>
+
+  <!-- ============ Navigation: identical on every page, don't edit ============ -->
+  <nav class="bar" aria-label="Pages">
+    <div class="pages">
+      <a href="page1.html">1</a>
+      <a href="page2.html">2</a>
+      <a href="page3.html">3</a>
+      <a href="page4.html">4</a>
+      <a href="page5.html">5</a>
+      <a href="page6.html">6</a>
+      <a href="page7.html">7</a>
+      <a href="page8.html">8</a>
+    </div>
+    <a class="star" href="page9.html" aria-label="Page 9">&#9733;</a>
+  </nav>
+
+</div>
+
+<!-- Enlarged image view (same on every page, don't edit) -->
+<div class="lightbox" id="lightbox"><img alt=""></div>
+
+<script>
+  // Highlights the current page number using <body data-page="...">
+  const current = document.body.dataset.page;
+  document.querySelectorAll('.pages a').forEach(a => {
+    if (a.textContent.trim() === current) {
+      a.classList.add('current');
+      a.setAttribute('aria-current', 'page');
+    }
+  });
+
+  // Click an image to see it in full; click anywhere or press Esc to close
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+  document.querySelectorAll('.card img').forEach(img => {
+    img.tabIndex = 0;
+    const open = () => {
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.classList.add('open');
+    };
+    img.addEventListener('click', open);
+    img.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
+  });
+  lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') lightbox.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>

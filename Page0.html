@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bob?</title>
+
+<style>
+  :root {
+    --line: #000;          /* outline color */
+    --bg: #fff;            /* page background */
+    --star: #ffe600;       /* yellow star color */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--line);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  /* the whole page: title on top, text in the middle, bar at the bottom */
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 28px;
+  }
+
+  /* centered title (can be 1 or 2 lines) */
+  .title {
+    margin: 0 0 56px;
+    text-align: center;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 900;
+    line-height: 1.25;
+  }
+
+  /* main text block */
+  .text {
+    flex: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto 40px;
+    font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: left;
+  }
+  .text p { margin: 0 0 1em; }
+
+  /* bottom bar: page numbers + star */
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .pages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 0 1 560px;
+    padding: 10px 24px;
+    border: 3px solid var(--line);
+    border-radius: 999px;
+  }
+  .pages a {
+    min-width: 34px;
+    padding: 4px 6px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--line);
+    text-decoration: none;
+    border-radius: 999px;
+  }
+  .pages a:hover,
+  .pages a:focus-visible { background: #eee; }
+  .pages a.current { background: var(--line); color: var(--bg); }
+
+  .star {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--line);
+    border-radius: 50%;
+    color: var(--star);
+    font-size: 1.8rem;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-text-stroke: 1.5px #c9b800;
+  }
+  .star:hover,
+  .star:focus-visible { background: #fffbd0; }
+
+  @media (max-width: 700px) {
+    .page { padding: 24px 16px 20px; }
+    .title { margin-bottom: 32px; }
+    .pages a { min-width: 26px; font-size: 1rem; }
+  }
+</style>
+</head>
+
+<!-- No page number is highlighted on this page, so data-page is 0 -->
+<body data-page="0">
+
+<div class="page">
+
+  <!-- ============ CHANGE 1 of 2: the title (use one or two lines) ============ -->
+  <h1 class="title">
+    La Multi Ani Bob!<br>
+    2024-2026
+  </h1>
+
+  <!-- ============ CHANGE 2 of 2: your text. One <p>...</p> per paragraph ============ -->
+  <main class="text">
+    <p>Pozele astea sunt luate din 2024-2026</p>
+    <p style="color:red;">CITITI!</p>
+	<p>Nu sunt sigur daca merge pe telefon</p>
+	<p>Puteti largi pozele daca apasati pe ele</p>
+	<p>Mergeti de la 1 pana la 8 si la final pe steluta</p>
+	<p>Steluta sunt ultimele poze, nu stricati surpriza</p>
+	<p>And lastly, have fun...</p>
+	<p style="color:green;">No A.I. btw</p>
+  </main>
+
+  <!-- ============ Navigation: identical to the other pages, don't edit ============ -->
+  <nav class="bar" aria-label="Pages">
+    <div class="pages">
+      <a href="page1.html">1</a>
+      <a href="page2.html">2</a>
+      <a href="page3.html">3</a>
+      <a href="page4.html">4</a>
+      <a href="page5.html">5</a>
+      <a href="page6.html">6</a>
+      <a href="page7.html">7</a>
+      <a href="page8.html">8</a>
+    </div>
+    <a class="star" href="page9.html" aria-label="Page 9">&#9733;</a>
+  </nav>
+
+</div>
+
+<script>
+  // Highlights the current page number using <body data-page="...">
+  const current = document.body.dataset.page;
+  document.querySelectorAll('.pages a').forEach(a => {
+    if (a.textContent.trim() === current) {
+      a.classList.add('current');
+      a.setAttribute('aria-current', 'page');
+    }
+  });
+</script>
+
+</body>
+</html>
